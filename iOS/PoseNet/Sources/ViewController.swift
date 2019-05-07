@@ -1,11 +1,13 @@
+import AVFoundation
+import CSV.Swift
 import Foundation
+import SwiftyJSON
+import TensorSwift
 import UIKit
 import Vision
-import TensorSwift
-import AVFoundation
 
 let posenet = PoseNet()
-var isXcode : Bool = true // true: localfile , false: device camera
+var isXcode: Bool = true // true: localfile , false: device camera
 
 // controlling the pace of the machine vision analysis
 var lastAnalysis: TimeInterval = 0
@@ -17,32 +19,83 @@ let framesPerSample = 10
 var startDate = NSDate.timeIntervalSinceReferenceDate
 let semaphore = DispatchSemaphore(value: 1)
 
-class ViewController: UIViewController {
+func isImage(filename: String) -> Bool {
+    if filename.hasSuffix(".png") || filename.hasSuffix(".jpeg") || filename.hasSuffix(".jpg") {
+        return true
+    } else {
+        return false
+    }
+}
+
+func initposearr() -> [UIImage] {
+    var res: [UIImage] = []
+    if let path = Bundle.main.resourcePath {
+        let imagePath = path
+        let url = NSURL(fileURLWithPath: imagePath)
+        let fileManager = FileManager.default
+        
+        let properties = [URLResourceKey.localizedNameKey,
+                          URLResourceKey.creationDateKey, URLResourceKey.localizedTypeDescriptionKey]
+        
+        do {
+            let imageURLs = try fileManager.contentsOfDirectory(at: url as URL, includingPropertiesForKeys: properties, options: FileManager.DirectoryEnumerationOptions.skipsHiddenFiles)
+            
+            //    print("image URLs: \(imageURLs)")
+            
+            // Create image from URL
+            for pic in imageURLs {
+                if isImage(filename: pic.absoluteString) {
+                    // var res =  UIImage(data: NSData(contentsOf: imageURLs[0])! as Data)
+                    res.append(UIImage(data: NSData(contentsOf: pic)! as Data)!)
+                }
+            }
+            
+        } catch let error1 as NSError {
+            print(error1.description)
+        }
+    }
+//    print(res)
+    return res
+}
+
+let imgarr = initposearr()
+
+class ViewController: UIViewController, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
+    @IBOutlet var previewView: UIImageView!
+    @IBOutlet var lineView: UIImageView!
     
-    @IBOutlet weak var previewView: UIImageView!
-    @IBOutlet weak var lineView: UIImageView!
-    
+    @IBOutlet var reportView: UITextView!
     let model = posenet513_v1_075()
     let targetImageSize = CGSize(width: 513, height: 513)
     var previewLayer: AVCaptureVideoPreviewLayer!
+    
+    @IBOutlet var reportButton: UIBarButtonItem!
     
     let videoQueue = DispatchQueue(label: "videoQueue")
     let drawQueue = DispatchQueue(label: "drawQueue")
     var captureSession = AVCaptureSession()
     var captureDevice: AVCaptureDevice?
     let videoOutput = AVCaptureVideoDataOutput()
-    var isWriting : Bool = false
+    var isWriting: Bool = false
+    let imgarr: [UIImage] = initposearr()
+    var ind = 1
+    
+    let imgpicker = UIImagePickerController()
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        imgpicker.delegate = self
+        
         previewView.frame = UIScreen.main.bounds
         previewView.contentMode = .scaleAspectFit
         
-        if (isXcode){
-            let fname = "tennis_in_crowd.jpg"
-            if let image = UIImage(named: fname)?.resize(to: targetImageSize){
-                previewView.image = image
+        imgarr.forEach { image in
+            if isXcode {
+                let fname = String(ind) + ".png"
+                ind += 1
+                // if let image = UIImage(named: fname)?.resize(to: targetImageSize) {
+                previewView.image = image.resize(to: targetImageSize)
                 let result = measure(
                     runCoreML(
                         image.pixelBuffer(width: Int(targetImageSize.width),
@@ -50,34 +103,110 @@ class ViewController: UIViewController {
                     )
                 )
                 print(result.duration)
-                drawResults(result.result)
-                //let result = runOffline()
-                //drawResults(result)
+                drawResults(result.result, name: fname)
+                // let result = runOffline()
+                // drawResults(result)
+                //   }
+            } else {
+                previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+                previewView.layer.addSublayer(previewLayer)
             }
-        } else {
-            previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
-            previewView.layer.addSublayer(previewLayer)
         }
-        
+        print(imgarr)
     }
     
     override func viewDidAppear(_ animated: Bool) {
-        if (!isXcode){
+        if !isXcode {
             setupCamera()
         }
     }
     
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
-        if (!isXcode){
-            previewLayer.frame = previewView.bounds;
-            lineView.frame = previewView.bounds;
+        if !isXcode {
+            previewLayer.frame = previewView.bounds
+            lineView.frame = previewView.bounds
         }
+    }
+    
+    func writeJson(json: JSON) {
+        let fileName = "Test"
+        let DocumentDirURL = try! FileManager.default.url(for: .documentDirectory, in: .userDomainMask, appropriateFor: nil, create: true)
+        
+        let fileURL = DocumentDirURL.appendingPathComponent(fileName).appendingPathExtension("json")
+        print("FilePath: \(fileURL.path)")
+        
+        do {
+            // Write to the file
+            try json.rawData(options: .prettyPrinted).write(to: fileURL)
+        } catch let error as NSError {
+            print("Failed writing to URL: \(fileURL), Error: " + error.localizedDescription)
+        }
+        
+        var readString = "" // Used to store the file contents
+        do {
+            // Read the file contents
+            readString = try String(contentsOf: fileURL)
+        } catch let error as NSError {
+            print("Failed reading from URL: \(fileURL), Error: " + error.localizedDescription)
+        }
+        print("File Text: \(readString)")
+        reportView.text = readString
+    }
+    
+    func createJson(data: [Keypoint], name: String) -> JSON {
+        var poseDict: [String: [Double]] = [:]
+        var resJson: JSON
+        data.forEach {
+            elem in
+            let point = [Double(elem.position.x), Double(elem.position.y)]
+            poseDict.updateValue(point, forKey: elem.part)
+        }
+        
+        resJson = JSON(poseDict)
+        
+        return (resJson)
+    }
+    
+    @IBAction func showReport(_ sender: UIBarButtonItem) {
+        reportView.isHidden = !reportView.isHidden
+    }
+    
+    @objc func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [String: Any]) {
+        if let pickedImage = info[UIImagePickerControllerOriginalImage] as? UIImage {
+            previewView.contentMode = .scaleAspectFit
+            previewView.image = pickedImage
+            
+            let result = measure(
+                runCoreML(
+                    previewView.image!.pixelBuffer(width: Int(targetImageSize.width),
+                                                   height: Int(targetImageSize.height))!
+                )
+            )
+            print(result.duration)
+            var fname = String(ind) + ".png"
+            drawResults(result.result, name: fname)
+            // let result = runOffline()
+            // drawResults(result)
+            //   }
+        } else {
+            previewLayer = AVCaptureVideoPreviewLayer(session: captureSession)
+            previewView.layer.addSublayer(previewLayer)
+        }
+        
+        dismiss(animated: true, completion: nil)
+    }
+    
+    @IBAction func loadImage(_ sender: UIBarButtonItem) {
+        imgpicker.allowsEditing = false
+        imgpicker.sourceType = .photoLibrary
+        
+        present(imgpicker, animated: true, completion: nil)
     }
     
     func setupCamera() {
         let deviceDiscovery = AVCaptureDevice.DiscoverySession(deviceTypes: [.builtInWideAngleCamera], mediaType: .video, position: .back)
-
+        
         if let device = deviceDiscovery.devices.last {
             captureDevice = device
             beginSession()
@@ -86,14 +215,14 @@ class ViewController: UIViewController {
     
     func beginSession() {
         do {
-            videoOutput.videoSettings = [((kCVPixelBufferPixelFormatTypeKey as NSString) as String) : (NSNumber(value: kCVPixelFormatType_32BGRA) as! UInt32)]
+            videoOutput.videoSettings = [kCVPixelBufferPixelFormatTypeKey as NSString as String: NSNumber(value: kCVPixelFormatType_32BGRA) as! UInt32]
             videoOutput.alwaysDiscardsLateVideoFrames = true
             videoOutput.setSampleBufferDelegate(self, queue: videoQueue)
             
-            if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.phone) {
+            if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.phone {
 //                captureSession.sessionPreset = .hd1920x1080
                 captureSession.sessionPreset = .photo
-            } else if (UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.pad) {
+            } else if UI_USER_INTERFACE_IDIOM() == UIUserInterfaceIdiom.pad {
                 captureSession.sessionPreset = .photo
             }
             
@@ -108,21 +237,20 @@ class ViewController: UIViewController {
         }
     }
     
-    func drawResults(_ poses: [Pose]){
-        
-        let minPoseConfidence: Float = 0.5
+    func drawResults(_ poses: [Pose], name: String) {
+        let minPoseConfidence: Float = 0.05
         
         let screen = UIScreen.main.bounds
-        let scale = screen.width / self.targetImageSize.width
-        let size = AVMakeRect(aspectRatio: self.targetImageSize,
-                              insideRect: self.previewView.frame)
+        let scale = screen.width / targetImageSize.width
+        let size = AVMakeRect(aspectRatio: targetImageSize,
+                              insideRect: previewView.frame)
         
         var linePath = UIBezierPath()
         var arcPath = UIBezierPath()
         poses.forEach { pose in
-            if (pose.score >= minPoseConfidence){
-                self.drawKeypoints(arcPath: &arcPath, keypoints: pose.keypoints,minConfidence: minPoseConfidence,
-                                   size: size.origin, scale: scale)
+            if pose.score >= minPoseConfidence {
+                self.drawKeypoints(arcPath: &arcPath, keypoints: pose.keypoints, minConfidence: minPoseConfidence,
+                                   size: size.origin, scale: scale, name: name)
                 self.drawSkeleton(linePath: &linePath, keypoints: pose.keypoints,
                                   minConfidence: minPoseConfidence,
                                   size: size.origin, scale: scale)
@@ -140,22 +268,20 @@ class ViewController: UIViewController {
         line.lineWidth = 2
         line.lineJoin = kCALineJoinRound
         
-        self.lineView.layer.sublayers = nil
-        self.lineView.layer.addSublayer(arcLine)
-        self.lineView.layer.addSublayer(line)
+        lineView.layer.sublayers = nil
+        lineView.layer.addSublayer(arcLine)
+        lineView.layer.addSublayer(line)
         linePath.removeAllPoints()
         arcPath.removeAllPoints()
         semaphore.wait()
         isWriting = false
         semaphore.signal()
-        
     }
     
     func drawKeypoints(arcPath: inout UIBezierPath, keypoints: [Keypoint], minConfidence: Float,
-                       size: CGPoint,scale: CGFloat = 1){
-        
+                       size: CGPoint, scale: CGFloat = 1, name: String) {
         keypoints.forEach { keypoint in
-            if (keypoint.score < minConfidence) {
+            if keypoint.score < minConfidence {
                 return
             }
             let center = CGPoint(x: CGFloat(keypoint.position.x) * scale + size.x,
@@ -166,11 +292,16 @@ class ViewController: UIViewController {
             
             arcPath.append(trackPath)
         }
+        
+        let json = createJson(data: keypoints, name: name)
+        
+        print(json.rawString(options: .prettyPrinted) as Any)
+        
+        writeJson(json: json)
     }
     
-    func drawSegment(linePath: inout UIBezierPath,fromPoint start: CGPoint, toPoint end:CGPoint,
+    func drawSegment(linePath: inout UIBezierPath, fromPoint start: CGPoint, toPoint end: CGPoint,
                      size: CGPoint, scale: CGFloat = 1) {
-        
         let newlinePath = UIBezierPath()
         newlinePath.move(to:
             CGPoint(x: start.x * scale + size.x, y: start.y * scale + size.y))
@@ -178,45 +309,43 @@ class ViewController: UIViewController {
             CGPoint(x: end.x * scale + size.x, y: end.y * scale + size.y))
         linePath.append(newlinePath)
     }
-    func drawSkeleton(linePath: inout UIBezierPath,keypoints: [Keypoint], minConfidence: Float,
-                      size: CGPoint, scale: CGFloat = 1){
+    
+    func drawSkeleton(linePath: inout UIBezierPath, keypoints: [Keypoint], minConfidence: Float,
+                      size: CGPoint, scale: CGFloat = 1) {
         let adjacentKeyPoints = getAdjacentKeyPoints(
-            keypoints: keypoints, minConfidence: minConfidence);
+            keypoints: keypoints, minConfidence: minConfidence)
         
         adjacentKeyPoints.forEach { keypoint in
             drawSegment(linePath: &linePath,
                         fromPoint:
-                CGPoint(x: CGFloat(keypoint[0].position.x),y: CGFloat(keypoint[0].position.y)),
+                        CGPoint(x: CGFloat(keypoint[0].position.x), y: CGFloat(keypoint[0].position.y)),
                         toPoint:
-                CGPoint(x: CGFloat(keypoint[1].position.x),y: CGFloat(keypoint[1].position.y)),
+                        CGPoint(x: CGFloat(keypoint[1].position.x), y: CGFloat(keypoint[1].position.y)),
                         size: size,
-                        scale: scale
-            )
+                        scale: scale)
         }
     }
     
     func eitherPointDoesntMeetConfidence(
-        _ a: Float,_ b: Float,_ minConfidence: Float) -> Bool {
+        _ a: Float, _ b: Float, _ minConfidence: Float) -> Bool {
         return (a < minConfidence || b < minConfidence)
     }
     
     func getAdjacentKeyPoints(
-        keypoints: [Keypoint], minConfidence: Float)-> [[Keypoint]] {
-        
+        keypoints: [Keypoint], minConfidence: Float) -> [[Keypoint]] {
         return connectedPartIndices.filter {
             !eitherPointDoesntMeetConfidence(
                 keypoints[$0.0].score,
                 keypoints[$0.1].score,
                 minConfidence)
-            }.map { [keypoints[$0.0],keypoints[$0.1]] }
+        }.map { [keypoints[$0.0], keypoints[$0.1]] }
     }
     
-    func runOffline() -> [Pose]{
-        
-        let scores = getTensorTranspose("heatmapScores",[33, 33, 17])
-        let offsets = getTensorTranspose("offsets",[33, 33, 34])
-        let displacementsFwd = getTensorTranspose("displacementsFwd",[33, 33, 32])
-        let displacementsBwd = getTensorTranspose("displacementsBwd",[33, 33, 32])
+    func runOffline() -> [Pose] {
+        let scores = getTensorTranspose("heatmapScores", [33, 33, 17])
+        let offsets = getTensorTranspose("offsets", [33, 33, 34])
+        let displacementsFwd = getTensorTranspose("displacementsFwd", [33, 33, 32])
+        let displacementsBwd = getTensorTranspose("displacementsBwd", [33, 33, 32])
         
         let sum = scores.reduce(0, +) / (17 * 33 * 33)
         print(sum)
@@ -227,13 +356,12 @@ class ViewController: UIViewController {
             displacementsFwd: displacementsFwd,
             displacementsBwd: displacementsBwd,
             outputStride: 16, maxPoseDetections: 5,
-            scoreThreshold: 0.5,nmsRadius: 20)
+            scoreThreshold: 0.5, nmsRadius: 20)
         
         return poses
     }
     
-    func runCoreML(_ img: CVPixelBuffer) -> [Pose]{
-        
+    func runCoreML(_ img: CVPixelBuffer) -> [Pose] {
         let result = try? model.prediction(image__0: img)
         
         let tensors = result?.featureNames.reduce(into: [String: Tensor]()) {
@@ -249,11 +377,10 @@ class ViewController: UIViewController {
             displacementsFwd: tensors!["displacement_fwd_2__0"]!,
             displacementsBwd: tensors!["displacement_bwd_2__0"]!,
             outputStride: 16, maxPoseDetections: 15,
-            scoreThreshold: 0.5,nmsRadius: 20)
+            scoreThreshold: 0.5, nmsRadius: 20)
         
         return poses
     }
-    
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -262,10 +389,8 @@ class ViewController: UIViewController {
 }
 
 extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
-    
     // called for each frame of video
     func captureOutput(_ captureOutput: AVCaptureOutput, didOutput sampleBuffer: CMSampleBuffer, from connection: AVCaptureConnection) {
-        
         let currentDate = NSDate.timeIntervalSinceReferenceDate
         
         // control the pace of the machine vision to protect battery life
@@ -280,11 +405,11 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
             frameCount = frameCount + 1
             if frameCount % framesPerSample == 0 {
                 let diff = currentDate - startDate
-                if (diff > 0) {
+                if diff > 0 {
                     if pace > 0.0 {
                         print("WARNING: Frame rate of image classification is being limited by \"pace\" setting. Set to 0.0 for fastest possible rate.")
                     }
-                    print("\(String.localizedStringWithFormat("%0.2f", (diff/Double(framesPerSample))))s per frame (average)")
+                    print("\(String.localizedStringWithFormat("%0.2f", diff / Double(framesPerSample)))s per frame (average)")
                 }
                 startDate = currentDate
             }
@@ -293,7 +418,7 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
 //        DispatchQueue.global(qos: .default).async {
         drawQueue.async {
             semaphore.wait()
-            if (self.isWriting == false) {
+            if self.isWriting == false {
                 self.isWriting = true
                 semaphore.signal()
                 let startTime = CFAbsoluteTimeGetCurrent()
@@ -302,10 +427,10 @@ extension ViewController: AVCaptureVideoDataOutputSampleBufferDelegate {
                 }
                 let poses = self.runCoreML(croppedBuffer)
                 DispatchQueue.main.sync {
-                    self.drawResults(poses)
+                    self.drawResults(poses, name: "")
                 }
                 let timeElapsed = CFAbsoluteTimeGetCurrent() - startTime
-                print ("Elapsed time is \(timeElapsed) seconds.")
+                print("Elapsed time is \(timeElapsed) seconds.")
             } else {
                 semaphore.signal()
             }
@@ -320,7 +445,6 @@ var cropTransform: CGAffineTransform?
 var resultBuffer: CVPixelBuffer?
 
 func croppedSampleBuffer(_ sampleBuffer: CMSampleBuffer, targetSize: CGSize) -> CVPixelBuffer? {
-    
     guard let imageBuffer: CVImageBuffer = CMSampleBufferGetImageBuffer(sampleBuffer) else {
         fatalError("Can't convert to CVImageBuffer.")
     }
@@ -344,7 +468,7 @@ func croppedSampleBuffer(_ sampleBuffer: CMSampleBuffer, targetSize: CGSize) -> 
         // Crop input image to output size
         let xDiff = rotatedSize.width * scale - targetSize.width
         let yDiff = rotatedSize.height * scale - targetSize.height
-        cropTransform = CGAffineTransform(translationX: xDiff/2.0, y: yDiff/2.0)
+        cropTransform = CGAffineTransform(translationX: xDiff / 2.0, y: yDiff / 2.0)
     }
     
     // Convert to CIImage because it is easier to manipulate
@@ -375,4 +499,3 @@ func croppedSampleBuffer(_ sampleBuffer: CMSampleBuffer, targetSize: CGSize) -> 
     
     return resultBuffer
 }
-

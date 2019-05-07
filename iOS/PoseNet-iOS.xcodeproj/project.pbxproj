@@ -3,13 +3,14 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
 		0092AA6B20E2A07400A1F578 /* posenet513_v1_075.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = 0092AA6A20E2A07400A1F578 /* posenet513_v1_075.mlmodel */; };
 		0092AA6D20E2A0ED00A1F578 /* ViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0092AA6C20E2A0ED00A1F578 /* ViewController.swift */; };
-		7952B60F94DEFCF4708C849F /* Pods_PoseNet.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 17B16AA2085F01B31FD19AE2 /* Pods_PoseNet.framework */; };
+		5EE9082B67C0B07460528485 /* Pods_PoseNet_iOS.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = F3A024882FBCB99A4AB98648 /* Pods_PoseNet_iOS.framework */; };
+		7E810150224E725D006132E1 /* res.json in Resources */ = {isa = PBXBuildFile; fileRef = 7E81014D224E725D006132E1 /* res.json */; };
 		CA2C781820AAA5DF007B0256 /* frisbee.jpg in Resources */ = {isa = PBXBuildFile; fileRef = CA2C781720AAA5DF007B0256 /* frisbee.jpg */; };
 		CA2D039B20B2642400E79822 /* posenet257.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = CA2D039920B2642400E79822 /* posenet257.mlmodel */; };
 		CA2D039C20B2642400E79822 /* posenet513.mlmodel in Sources */ = {isa = PBXBuildFile; fileRef = CA2D039A20B2642400E79822 /* posenet513.mlmodel */; };
@@ -37,6 +38,13 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
+		7E810155224E73B8006132E1 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = CA84FAB920A9254D004CFED7 /* Pods.xcodeproj */;
+			proxyType = 2;
+			remoteGlobalIDString = FFBC289254D01AFF3F238EB4D070C018;
+			remoteInfo = SwiftyJSON;
+		};
 		CA84FABE20A9254E004CFED7 /* PBXContainerItemProxy */ = {
 			isa = PBXContainerItemProxy;
 			containerPortal = CA84FAB920A9254D004CFED7 /* Pods.xcodeproj */;
@@ -56,9 +64,11 @@
 /* Begin PBXFileReference section */
 		0092AA6A20E2A07400A1F578 /* posenet513_v1_075.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = posenet513_v1_075.mlmodel; sourceTree = "<group>"; };
 		0092AA6C20E2A0ED00A1F578 /* ViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewController.swift; sourceTree = "<group>"; };
-		17B16AA2085F01B31FD19AE2 /* Pods_PoseNet.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PoseNet.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D7E89123A3F83BE226BAD5C /* Pods-PoseNet.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoseNet.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PoseNet/Pods-PoseNet.debug.xcconfig"; sourceTree = "<group>"; };
+		4CD87BD0DF4D7C2D1F018348 /* Pods-PoseNet-iOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoseNet-iOS.release.xcconfig"; path = "Pods/Target Support Files/Pods-PoseNet-iOS/Pods-PoseNet-iOS.release.xcconfig"; sourceTree = "<group>"; };
 		4F161A57CC8DD5AA246BF99E /* Pods-PoseNet.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoseNet.release.xcconfig"; path = "Pods/Target Support Files/Pods-PoseNet/Pods-PoseNet.release.xcconfig"; sourceTree = "<group>"; };
+		7E81014D224E725D006132E1 /* res.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = res.json; sourceTree = "<group>"; };
+		9333969AC0920485F9D1E6A7 /* Pods-PoseNet-iOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-PoseNet-iOS.debug.xcconfig"; path = "Pods/Target Support Files/Pods-PoseNet-iOS/Pods-PoseNet-iOS.debug.xcconfig"; sourceTree = "<group>"; };
 		CA2C781720AAA5DF007B0256 /* frisbee.jpg */ = {isa = PBXFileReference; lastKnownFileType = image.jpeg; path = frisbee.jpg; sourceTree = "<group>"; };
 		CA2D039920B2642400E79822 /* posenet257.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = posenet257.mlmodel; sourceTree = "<group>"; };
 		CA2D039A20B2642400E79822 /* posenet513.mlmodel */ = {isa = PBXFileReference; lastKnownFileType = file.mlmodel; path = posenet513.mlmodel; sourceTree = "<group>"; };
@@ -66,7 +76,7 @@
 		CA304FDB20A9B8CD0073FD62 /* PriorityQueue.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PriorityQueue.swift; sourceTree = "<group>"; };
 		CA304FDF20A9B99A0073FD62 /* Heap.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Heap.swift; sourceTree = "<group>"; };
 		CA5A874F20AAA6B3004E51F6 /* soccer.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = soccer.png; sourceTree = "<group>"; };
-		CA84FA9620A921DB004CFED7 /* PoseNet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = PoseNet.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		CA84FA9620A921DB004CFED7 /* PoseNet-iOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "PoseNet-iOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA84FA9920A921DB004CFED7 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		CA84FA9E20A921DB004CFED7 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
 		CA84FAA020A921DE004CFED7 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
@@ -86,6 +96,7 @@
 		CA84FACA20A9776A004CFED7 /* displacementsBwd.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = displacementsBwd.bin; sourceTree = "<group>"; };
 		CA84FACB20A9776A004CFED7 /* heatmapScores.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = heatmapScores.bin; sourceTree = "<group>"; };
 		CAD8E52A20AABD97006F8275 /* lifting.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = lifting.png; sourceTree = "<group>"; };
+		F3A024882FBCB99A4AB98648 /* Pods_PoseNet_iOS.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_PoseNet_iOS.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -93,7 +104,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				7952B60F94DEFCF4708C849F /* Pods_PoseNet.framework in Frameworks */,
+				5EE9082B67C0B07460528485 /* Pods_PoseNet_iOS.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -103,7 +114,7 @@
 		6471F8E8640A84FCC0342F83 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				17B16AA2085F01B31FD19AE2 /* Pods_PoseNet.framework */,
+				F3A024882FBCB99A4AB98648 /* Pods_PoseNet_iOS.framework */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -113,6 +124,8 @@
 			children = (
 				1D7E89123A3F83BE226BAD5C /* Pods-PoseNet.debug.xcconfig */,
 				4F161A57CC8DD5AA246BF99E /* Pods-PoseNet.release.xcconfig */,
+				9333969AC0920485F9D1E6A7 /* Pods-PoseNet-iOS.debug.xcconfig */,
+				4CD87BD0DF4D7C2D1F018348 /* Pods-PoseNet-iOS.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -141,7 +154,7 @@
 		CA84FA9720A921DB004CFED7 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				CA84FA9620A921DB004CFED7 /* PoseNet.app */,
+				CA84FA9620A921DB004CFED7 /* PoseNet-iOS.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -166,6 +179,7 @@
 				CA2C781720AAA5DF007B0256 /* frisbee.jpg */,
 				CA2D039920B2642400E79822 /* posenet257.mlmodel */,
 				CA2D039D20B2657200E79822 /* posenet337.mlmodel */,
+				7E81014D224E725D006132E1 /* res.json */,
 				CA2D039A20B2642400E79822 /* posenet513.mlmodel */,
 				0092AA6A20E2A07400A1F578 /* posenet513_v1_075.mlmodel */,
 				CA84FACA20A9776A004CFED7 /* displacementsBwd.bin */,
@@ -198,6 +212,7 @@
 			isa = PBXGroup;
 			children = (
 				CA84FABF20A9254E004CFED7 /* Pods_PoseNet.framework */,
+				7E810156224E73B8006132E1 /* SwiftyJSON.framework */,
 				CA84FAC120A9254E004CFED7 /* TensorSwift.framework */,
 			);
 			name = Products;
@@ -206,9 +221,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		CA84FA9520A921DB004CFED7 /* PoseNet */ = {
+		CA84FA9520A921DB004CFED7 /* PoseNet-iOS */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = CA84FAA820A921DE004CFED7 /* Build configuration list for PBXNativeTarget "PoseNet" */;
+			buildConfigurationList = CA84FAA820A921DE004CFED7 /* Build configuration list for PBXNativeTarget "PoseNet-iOS" */;
 			buildPhases = (
 				1473BAAC2C480C07BFE77255 /* [CP] Check Pods Manifest.lock */,
 				CA84FA9220A921DB004CFED7 /* Sources */,
@@ -220,9 +235,9 @@
 			);
 			dependencies = (
 			);
-			name = PoseNet;
+			name = "PoseNet-iOS";
 			productName = PoseNet;
-			productReference = CA84FA9620A921DB004CFED7 /* PoseNet.app */;
+			productReference = CA84FA9620A921DB004CFED7 /* PoseNet-iOS.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -240,7 +255,7 @@
 					};
 				};
 			};
-			buildConfigurationList = CA84FA9120A921DB004CFED7 /* Build configuration list for PBXProject "PoseNet" */;
+			buildConfigurationList = CA84FA9120A921DB004CFED7 /* Build configuration list for PBXProject "PoseNet-iOS" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -259,12 +274,19 @@
 			);
 			projectRoot = "";
 			targets = (
-				CA84FA9520A921DB004CFED7 /* PoseNet */,
+				CA84FA9520A921DB004CFED7 /* PoseNet-iOS */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXReferenceProxy section */
+		7E810156224E73B8006132E1 /* SwiftyJSON.framework */ = {
+			isa = PBXReferenceProxy;
+			fileType = wrapper.framework;
+			path = SwiftyJSON.framework;
+			remoteRef = 7E810155224E73B8006132E1 /* PBXContainerItemProxy */;
+			sourceTree = BUILT_PRODUCTS_DIR;
+		};
 		CA84FABF20A9254E004CFED7 /* Pods_PoseNet.framework */ = {
 			isa = PBXReferenceProxy;
 			fileType = wrapper.framework;
@@ -288,6 +310,7 @@
 			files = (
 				CA84FAA420A921DE004CFED7 /* LaunchScreen.storyboard in Resources */,
 				CA84FACE20A9776A004CFED7 /* displacementsBwd.bin in Resources */,
+				7E810150224E725D006132E1 /* res.json in Resources */,
 				CA2C781820AAA5DF007B0256 /* frisbee.jpg in Resources */,
 				CA84FACC20A9776A004CFED7 /* offsets.bin in Resources */,
 				CAD8E52B20AABD97006F8275 /* lifting.png in Resources */,
@@ -314,7 +337,7 @@
 			);
 			name = "[CP] Check Pods Manifest.lock";
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-PoseNet-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-PoseNet-iOS-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -326,17 +349,16 @@
 			buildActionMask = 2147483647;
 			files = (
 			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-PoseNet/Pods-PoseNet-frameworks.sh",
-				"${BUILT_PRODUCTS_DIR}/TensorSwift/TensorSwift.framework",
+			inputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-PoseNet-iOS/Pods-PoseNet-iOS-frameworks-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Embed Pods Frameworks";
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/TensorSwift.framework",
+			outputFileListPaths = (
+				"${PODS_ROOT}/Target Support Files/Pods-PoseNet-iOS/Pods-PoseNet-iOS-frameworks-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-PoseNet/Pods-PoseNet-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-PoseNet-iOS/Pods-PoseNet-iOS-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -502,17 +524,17 @@
 		};
 		CA84FAA920A921DE004CFED7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1D7E89123A3F83BE226BAD5C /* Pods-PoseNet.debug.xcconfig */;
+			baseConfigurationReference = 9333969AC0920485F9D1E6A7 /* Pods-PoseNet-iOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = U3FCTVM259;
+				DEVELOPMENT_TEAM = F6S648MSLQ;
 				INFOPLIST_FILE = PoseNet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = jp.co.infocom.tpo.example.posenet;
+				PRODUCT_BUNDLE_IDENTIFIER = "sfedu-posenet-kasyulevich";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -521,17 +543,17 @@
 		};
 		CA84FAAA20A921DE004CFED7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 4F161A57CC8DD5AA246BF99E /* Pods-PoseNet.release.xcconfig */;
+			baseConfigurationReference = 4CD87BD0DF4D7C2D1F018348 /* Pods-PoseNet-iOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
-				DEVELOPMENT_TEAM = U3FCTVM259;
+				DEVELOPMENT_TEAM = F6S648MSLQ;
 				INFOPLIST_FILE = PoseNet/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = jp.co.infocom.tpo.example.posenet;
+				PRODUCT_BUNDLE_IDENTIFIER = "sfedu-posenet-kasyulevich";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 4.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -541,7 +563,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		CA84FA9120A921DB004CFED7 /* Build configuration list for PBXProject "PoseNet" */ = {
+		CA84FA9120A921DB004CFED7 /* Build configuration list for PBXProject "PoseNet-iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CA84FAA620A921DE004CFED7 /* Debug */,
@@ -550,7 +572,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		CA84FAA820A921DE004CFED7 /* Build configuration list for PBXNativeTarget "PoseNet" */ = {
+		CA84FAA820A921DE004CFED7 /* Build configuration list for PBXNativeTarget "PoseNet-iOS" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				CA84FAA920A921DE004CFED7 /* Debug */,

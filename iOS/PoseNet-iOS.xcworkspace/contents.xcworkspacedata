@@ -2,7 +2,7 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "group:/Users/ankasulevic/Documents/&#x41d;&#x430;&#x443;&#x447;&#x43a;&#x430;/Posnet-iOS/PoseNet-CoreML/iOS/PoseNet-iOS.xcodeproj">
+      location = "group:PoseNet-iOS.xcodeproj">
    </FileRef>
    <FileRef
       location = "group:Pods/Pods.xcodeproj">

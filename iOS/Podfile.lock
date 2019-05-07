@@ -1,16 +1,24 @@
 PODS:
+  - CSV.swift (2.3.1)
+  - SwiftyJSON (4.2.0)
   - TensorSwift (0.2.2)
 
 DEPENDENCIES:
+  - CSV.swift (~> 2.3.1)
+  - SwiftyJSON (~> 4.0)
   - TensorSwift (~> 0.2)
 
 SPEC REPOS:
   https://github.com/cocoapods/specs.git:
+    - CSV.swift
+    - SwiftyJSON
     - TensorSwift
 
 SPEC CHECKSUMS:
+  CSV.swift: d16f671b3090a2c0525d5f2165b18319074aae2b
+  SwiftyJSON: c4bcba26dd9ec7a027fc8eade48e2c911f229e96
   TensorSwift: 09217b0fb41272c6a178ba50b4bb01f2d10d88be
 
-PODFILE CHECKSUM: 5c68b7348b32d6144142e40fbbd18edb47adb157
+PODFILE CHECKSUM: ee63058869f2908af7cd9a9865509ff9cb5950e7
 
-COCOAPODS: 1.5.2
+COCOAPODS: 1.7.0.beta.2
